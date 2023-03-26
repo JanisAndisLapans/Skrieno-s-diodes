@@ -454,6 +454,7 @@ TOSH equ 0FFEh ;#
 # 8894 "/opt/microchip/xc8/v2.36/pic/include/proc/pic18f4550.h"
 TOSU equ 0FFFh ;# 
 	debug_source C
+	FNCALL	_main,_set_led_i
 	FNROOT	_main
 	global	_TRISD5
 _TRISD5	set	0x7CAD
@@ -469,6 +470,10 @@ _TRISD1	set	0x7CA9
 _TRISC2	set	0x7CA2
 	global	_TRISC1
 _TRISC1	set	0x7CA1
+	global	_PORTCbits
+_PORTCbits	set	0xF82
+	global	_PORTDbits
+_PORTDbits	set	0xF83
 	global	_TRISC0
 _TRISC0	set	0x7CA0
 	global	_TRISD0
@@ -534,13 +539,31 @@ global end_of_initialization,__end_of__initialization
 
 end_of_initialization:
 __end_of__initialization:
+	GLOBAL	__Lmediumconst
+	movlw	low highword(__Lmediumconst)
+	movwf	tblptru
 movlb 0
 goto _main	;jump to C main() function
 psect	cstackCOMRAM,class=COMRAM,space=1,noexec,lowdata
 global __pcstackCOMRAM
 __pcstackCOMRAM:
+?_set_led_i:	; 1 bytes @ 0x0
 ?_main:	; 1 bytes @ 0x0
-??_main:	; 1 bytes @ 0x0
+	global	set_led_i@i
+set_led_i@i:	; 2 bytes @ 0x0
+	ds   2
+	global	set_led_i@val
+set_led_i@val:	; 1 bytes @ 0x2
+	ds   1
+??_set_led_i:	; 1 bytes @ 0x3
+	ds   2
+??_main:	; 1 bytes @ 0x5
+	ds   2
+	global	main@dir
+main@dir:	; 2 bytes @ 0x7
+	ds   2
+	global	main@curr_i
+main@curr_i:	; 2 bytes @ 0x9
 	ds   2
 ;!
 ;!Data Sizes:
@@ -553,7 +576,7 @@ __pcstackCOMRAM:
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           95      2       2
+;!    COMRAM           95     11      11
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -572,7 +595,7 @@ __pcstackCOMRAM:
 ;!
 ;!Critical Paths under _main in COMRAM
 ;!
-;!    None.
+;!    _main->_set_led_i
 ;!
 ;!Critical Paths under _main in BANK0
 ;!
@@ -616,15 +639,20 @@ __pcstackCOMRAM:
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 2     2      0       0
-;!                                              0 COMRAM     2     2      0
+;! (0) _main                                                 6     6      0     639
+;!                                              5 COMRAM     6     6      0
+;!                          _set_led_i
 ;! ---------------------------------------------------------------------------------
-;! Estimated maximum stack depth 0
+;! (1) _set_led_i                                            5     2      3     524
+;!                                              0 COMRAM     5     2      3
+;! ---------------------------------------------------------------------------------
+;! Estimated maximum stack depth 1
 ;! ---------------------------------------------------------------------------------
 ;!
 ;! Call Graph Graphs:
 ;!
 ;! _main (ROOT)
+;!   _set_led_i
 ;!
 
 ;! Address spaces:
@@ -634,29 +662,30 @@ __pcstackCOMRAM:
 ;!EEDATA             100      0       0       0        0.0%
 ;!NULL                 0      0       0       0        0.0%
 ;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5F      2       2       1        2.1%
+;!COMRAM              5F      B       B       1       11.6%
 ;!STACK                0      0       0       2        0.0%
 ;!DATA                 0      0       0       3        0.0%
 ;!BITBANK0            A0      0       0       4        0.0%
 ;!BANK0               A0      0       0       5        0.0%
-;!ABS                  0      0       0       6        0.0%
-;!BITBANK1           100      0       0       7        0.0%
-;!BANK1              100      0       0       8        0.0%
-;!BITBANK2           100      0       0       9        0.0%
-;!BANK2              100      0       0      10        0.0%
-;!BITBANK3           100      0       0      11        0.0%
-;!BANK3              100      0       0      12        0.0%
-;!BITBANK4           100      0       0      13        0.0%
-;!BANK4              100      0       0      14        0.0%
-;!BITBANK5           100      0       0      15        0.0%
-;!BANK5              100      0       0      16        0.0%
-;!BITBANK6           100      0       0      17        0.0%
-;!BANK6              100      0       0      18        0.0%
+;!BITBANK1           100      0       0       6        0.0%
+;!BANK1              100      0       0       7        0.0%
+;!BITBANK2           100      0       0       8        0.0%
+;!BANK2              100      0       0       9        0.0%
+;!BITBANK3           100      0       0      10        0.0%
+;!BANK3              100      0       0      11        0.0%
+;!BITBANK4           100      0       0      12        0.0%
+;!BANK4              100      0       0      13        0.0%
+;!BITBANK5           100      0       0      14        0.0%
+;!BANK5              100      0       0      15        0.0%
+;!BITBANK6           100      0       0      16        0.0%
+;!BANK6              100      0       0      17        0.0%
+;!ABS                  0      0       0      18        0.0%
 ;!BITBANK7           100      0       0      19        0.0%
 ;!BANK7              100      0       0      20        0.0%
-;!BITBIGSFRh          6A      0       0      21        0.0%
-;!BITBIGSFRl          34      0       0      22        0.0%
-;!BIGRAM             7FF      0       0      23        0.0%
+;!BITBIGSFRhh         6A      0       0      21        0.0%
+;!BITBIGSFRhl         10      0       0      22        0.0%
+;!BITBIGSFRl          22      0       0      23        0.0%
+;!BIGRAM             7FF      0       0      24        0.0%
 ;!BIGSFR               0      0       0     200        0.0%
 ;!BITSFR               0      0       0     200        0.0%
 ;!SFR                  0      0       0     200        0.0%
@@ -665,66 +694,145 @@ __pcstackCOMRAM:
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 19 in file "MovingDiodes.c"
+;;		line 55 in file "MovingDiodes.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;		None
+;;  curr_i          2    9[COMRAM] int 
+;;  dir             2    7[COMRAM] int 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
-;;		wreg
+;;		wreg, status,2, status,0, cstack
 ;; Tracked objects:
 ;;		On entry : 0/0
 ;;		On exit  : 0/0
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5   BANK6   BANK7
 ;;      Params:         0       0       0       0       0       0       0       0       0
-;;      Locals:         0       0       0       0       0       0       0       0       0
+;;      Locals:         4       0       0       0       0       0       0       0       0
 ;;      Temps:          2       0       0       0       0       0       0       0       0
-;;      Totals:         2       0       0       0       0       0       0       0       0
-;;Total ram usage:        2 bytes
+;;      Totals:         6       0       0       0       0       0       0       0       0
+;;Total ram usage:        6 bytes
+;; Hardware stack levels required when called: 1
 ;; This function calls:
-;;		Nothing
+;;		_set_led_i
 ;; This function is called by:
 ;;		Startup code after reset
 ;; This function uses a non-reentrant model
 ;;
 psect	text0,class=CODE,space=0,reloc=2,group=0
 	file	"MovingDiodes.c"
-	line	19
+	line	55
 global __ptext0
 __ptext0:
 psect	text0
 	file	"MovingDiodes.c"
-	line	19
+	line	55
 	
 _main:
 ;incstack = 0
-	callstack 31
-	line	23
+	callstack 30
+	line	59
 	
-l776:
+l841:
 	bcf	c:(31904/8),(31904)&7	;volatile
-	line	24
+	line	60
 	bcf	c:(31905/8),(31905)&7	;volatile
-	line	25
+	line	61
 	bcf	c:(31906/8),(31906)&7	;volatile
-	line	26
+	line	62
 	bcf	c:(31912/8),(31912)&7	;volatile
-	line	27
+	line	63
 	bcf	c:(31913/8),(31913)&7	;volatile
-	line	28
+	line	64
 	bcf	c:(31914/8),(31914)&7	;volatile
-	line	29
+	line	65
 	bcf	c:(31915/8),(31915)&7	;volatile
-	line	30
+	line	66
 	bcf	c:(31916/8),(31916)&7	;volatile
-	line	31
+	line	67
 	bcf	c:(31917/8),(31917)&7	;volatile
-	line	39
+	line	70
+	bsf	((c:3970))^0f00h,c,0	;volatile
+	line	74
 	
-l778:
+l843:
+	movlw	high(0)
+	movwf	((c:main@curr_i+1))^00h,c
+	movlw	low(0)
+	movwf	((c:main@curr_i))^00h,c
+	line	80
+	movlw	high(01h)
+	movwf	((c:main@dir+1))^00h,c
+	movlw	low(01h)
+	movwf	((c:main@dir))^00h,c
+	line	87
+	
+l845:
+	movff	(c:main@curr_i),(c:set_led_i@i)
+	movff	(c:main@curr_i+1),(c:set_led_i@i+1)
+	movlw	low(0)
+	movwf	((c:set_led_i@val))^00h,c
+	call	_set_led_i	;wreg free
+	line	91
+	
+l847:
+	movf	((c:main@dir))^00h,c,w
+	addwf	((c:main@curr_i))^00h,c
+	movf	((c:main@dir+1))^00h,c,w
+	addwfc	((c:main@curr_i+1))^00h,c
+
+	line	92
+	
+l849:
+		movlw	9
+	xorwf	((c:main@curr_i))^00h,c,w
+iorwf	((c:main@curr_i+1))^00h,c,w
+	btfss	status,2
+	goto	u211
+	goto	u210
+
+u211:
+	goto	l853
+u210:
+	line	94
+	
+l851:
+	movlw	high(0)
+	movwf	((c:main@curr_i+1))^00h,c
+	movlw	low(0)
+	movwf	((c:main@curr_i))^00h,c
+	line	95
+	goto	l857
+	line	96
+	
+l853:
+	btfsc	((c:main@curr_i+1))^00h,c,7
+	goto	u220
+	goto	u221
+
+u221:
+	goto	l857
+u220:
+	line	98
+	
+l855:
+	movlw	high(08h)
+	movwf	((c:main@curr_i+1))^00h,c
+	movlw	low(08h)
+	movwf	((c:main@curr_i))^00h,c
+	line	102
+	
+l857:
+	movff	(c:main@curr_i),(c:set_led_i@i)
+	movff	(c:main@curr_i+1),(c:set_led_i@i+1)
+	movlw	low(01h)
+	movwf	((c:set_led_i@val))^00h,c
+	call	_set_led_i	;wreg free
+	line	105
+	
+l859:
 	asmopt push
 asmopt off
 movlw  2
@@ -732,25 +840,262 @@ movwf	(??_main+0+0+1)^00h,c
 movlw	69
 movwf	(??_main+0+0)^00h,c
 	movlw	170
-u17:
+u237:
 decfsz	wreg,f
-	bra	u17
+	bra	u237
 	decfsz	(??_main+0+0)^00h,c,f
-	bra	u17
+	bra	u237
 	decfsz	(??_main+0+0+1)^00h,c,f
-	bra	u17
+	bra	u237
 asmopt pop
 
-	goto	l778
+	goto	l845
 	global	start
 	goto	start
 	callstack 0
-	line	42
+	line	110
 GLOBAL	__end_of_main
 	__end_of_main:
 	signat	_main,89
+	global	_set_led_i
+
+;; *************** function _set_led_i *****************
+;; Defined at:
+;;		line 18 in file "MovingDiodes.c"
+;; Parameters:    Size  Location     Type
+;;  i               2    0[COMRAM] int 
+;;  val             1    2[COMRAM] unsigned char 
+;; Auto vars:     Size  Location     Type
+;;		None
+;; Return value:  Size  Location     Type
+;;                  1    wreg      void 
+;; Registers used:
+;;		wreg, status,2, status,0
+;; Tracked objects:
+;;		On entry : 0/0
+;;		On exit  : 0/0
+;;		Unchanged: 0/0
+;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5   BANK6   BANK7
+;;      Params:         3       0       0       0       0       0       0       0       0
+;;      Locals:         0       0       0       0       0       0       0       0       0
+;;      Temps:          2       0       0       0       0       0       0       0       0
+;;      Totals:         5       0       0       0       0       0       0       0       0
+;;Total ram usage:        5 bytes
+;; Hardware stack levels used: 1
+;; This function calls:
+;;		Nothing
+;; This function is called by:
+;;		_main
+;; This function uses a non-reentrant model
+;;
+psect	text1,class=CODE,space=0,reloc=2,group=0
+	line	18
+global __ptext1
+__ptext1:
+psect	text1
+	file	"MovingDiodes.c"
+	line	18
+	
+_set_led_i:
+;incstack = 0
+	callstack 30
+	line	22
+	
+l831:
+	goto	l835
+	line	24
+	
+l28:
+	line	25
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u125
+	bcf	((c:3970))^0f00h,c,0	;volatile
+	bra	u126
+	u125:
+	bsf	((c:3970))^0f00h,c,0	;volatile
+	u126:
+
+	line	26
+	goto	l38
+	line	27
+	
+l30:
+	line	28
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u135
+	bcf	((c:3970))^0f00h,c,1	;volatile
+	bra	u136
+	u135:
+	bsf	((c:3970))^0f00h,c,1	;volatile
+	u136:
+
+	line	29
+	goto	l38
+	line	30
+	
+l31:
+	line	31
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u145
+	bcf	((c:3970))^0f00h,c,2	;volatile
+	bra	u146
+	u145:
+	bsf	((c:3970))^0f00h,c,2	;volatile
+	u146:
+
+	line	32
+	goto	l38
+	line	33
+	
+l32:
+	line	34
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u155
+	bcf	((c:3971))^0f00h,c,0	;volatile
+	bra	u156
+	u155:
+	bsf	((c:3971))^0f00h,c,0	;volatile
+	u156:
+
+	line	35
+	goto	l38
+	line	36
+	
+l33:
+	line	37
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u165
+	bcf	((c:3971))^0f00h,c,1	;volatile
+	bra	u166
+	u165:
+	bsf	((c:3971))^0f00h,c,1	;volatile
+	u166:
+
+	line	38
+	goto	l38
+	line	39
+	
+l34:
+	line	40
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u175
+	bcf	((c:3971))^0f00h,c,2	;volatile
+	bra	u176
+	u175:
+	bsf	((c:3971))^0f00h,c,2	;volatile
+	u176:
+
+	line	41
+	goto	l38
+	line	42
+	
+l35:
+	line	43
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u185
+	bcf	((c:3971))^0f00h,c,3	;volatile
+	bra	u186
+	u185:
+	bsf	((c:3971))^0f00h,c,3	;volatile
+	u186:
+
+	line	44
+	goto	l38
+	line	45
+	
+l36:
+	line	46
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u195
+	bcf	((c:3971))^0f00h,c,4	;volatile
+	bra	u196
+	u195:
+	bsf	((c:3971))^0f00h,c,4	;volatile
+	u196:
+
+	line	47
+	goto	l38
+	line	48
+	
+l37:
+	line	49
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u205
+	bcf	((c:3971))^0f00h,c,5	;volatile
+	bra	u206
+	u205:
+	bsf	((c:3971))^0f00h,c,5	;volatile
+	u206:
+
+	line	50
+	goto	l38
+	line	22
+	
+l835:
+	movff	(c:set_led_i@i),??_set_led_i+0+0
+	movff	(c:set_led_i@i+1),??_set_led_i+0+0+1
+	; Switch on 2 bytes has been partitioned into a top level switch of size 1, and 1 sub-switches
+; Switch size 1, requested type "simple"
+; Number of cases is 1, Range of values is 0 to 0
+; switch strategies available:
+; Name         Instructions Cycles
+; simple_byte            4     3 (average)
+;	Chosen strategy is simple_byte
+
+	movf ??_set_led_i+0+1^00h,c,w
+	xorlw	0^0	; case 0
+	skipnz
+	goto	l865
+	goto	l38
+	
+l865:
+; Switch size 1, requested type "simple"
+; Number of cases is 9, Range of values is 0 to 8
+; switch strategies available:
+; Name         Instructions Cycles
+; simple_byte           28    15 (average)
+;	Chosen strategy is simple_byte
+
+	movf ??_set_led_i+0+0^00h,c,w
+	xorlw	0^0	; case 0
+	skipnz
+	goto	l28
+	xorlw	1^0	; case 1
+	skipnz
+	goto	l30
+	xorlw	2^1	; case 2
+	skipnz
+	goto	l31
+	xorlw	3^2	; case 3
+	skipnz
+	goto	l32
+	xorlw	4^3	; case 4
+	skipnz
+	goto	l33
+	xorlw	5^4	; case 5
+	skipnz
+	goto	l34
+	xorlw	6^5	; case 6
+	skipnz
+	goto	l35
+	xorlw	7^6	; case 7
+	skipnz
+	goto	l36
+	xorlw	8^7	; case 8
+	skipnz
+	goto	l37
+	goto	l38
+
+	line	52
+	
+l38:
+	return	;funcret
+	callstack 0
+GLOBAL	__end_of_set_led_i
+	__end_of_set_led_i:
+	signat	_set_led_i,8313
 	GLOBAL	__activetblptr
-__activetblptr	EQU	0
+__activetblptr	EQU	2
 	psect	intsave_regs,class=BIGRAM,space=1,noexec
 	PSECT	rparam,class=COMRAM,space=1,noexec
 	GLOBAL	__Lrparam

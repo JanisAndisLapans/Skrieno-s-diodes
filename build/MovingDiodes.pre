@@ -5722,7 +5722,44 @@ unsigned char __t3rd16on(void);
 
 #pragma config EBTRB = OFF
 
-# 19 "MovingDiodes.c"
+# 18 "MovingDiodes.c"
+void set_led_i(int i, unsigned char val)
+{
+
+
+switch(i)
+{
+case 0:
+PORTCbits.RC0 = val;
+break;
+case 1:
+PORTCbits.RC1 = val;
+break;
+case 2:
+PORTCbits.RC2 = val;
+break;
+case 3:
+PORTDbits.RD0 = val;
+break;
+case 4:
+PORTDbits.RD1 = val;
+break;
+case 5:
+PORTDbits.RD2 = val;
+break;
+case 6:
+PORTDbits.RD3 = val;
+break;
+case 7:
+PORTDbits.RD4 = val;
+break;
+case 8:
+PORTDbits.RD5 = val;
+break;
+}
+}
+
+
 void main(void)
 {
 
@@ -5738,12 +5775,41 @@ TRISD4 = 0;;
 TRISD5 = 0;;
 
 
+PORTCbits.RC0 = 1;
+
+
+
+int curr_i = 0;
+
+# 80
+int dir = 1;
+
+
 
 while(1)
 {
 
+set_led_i(curr_i, 0);
+
+
+
+curr_i += dir;
+if(curr_i == 9)
+{
+curr_i = 0;
+}
+else if(curr_i < 0)
+{
+curr_i = 9 - 1;
+}
+
+
+set_led_i(curr_i, 1);
+
 
 _delay((unsigned long)((500)*(2000000/4000.0)));
+
+
 }
 
 }
