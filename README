@@ -15,7 +15,7 @@ LED8: RD4
 LED9: RD5
 Poga: RD6
 
-Lai kompilētu nepieciešams xc8 (https://microchipdeveloper.com/xc8:installation, tad jāpievieno PATH)
+Lai kompilētu nepieciešams xc8 (https://microchipdeveloper.com/xc8:installation, tad jāpievieno PATH opt/microchip/xc8/v2.36/bin)
 
 Komanda kompilēšanai: xc8 --chip=18F4550 --outdir=build MovingDiodes.c
 Tad /build atrodami rezultējošie faili (piem., MovingDiodes.hex)
