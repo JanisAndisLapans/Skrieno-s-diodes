@@ -5722,7 +5722,7 @@ unsigned char __t3rd16on(void);
 
 #pragma config EBTRB = OFF
 
-# 18 "MovingDiodes.c"
+# 21 "MovingDiodes.c"
 void set_led_i(int i, unsigned char val)
 {
 
@@ -5759,7 +5759,6 @@ break;
 }
 }
 
-
 void main(void)
 {
 
@@ -5774,16 +5773,20 @@ TRISD3 = 0;;
 TRISD4 = 0;;
 TRISD5 = 0;;
 
-
-PORTCbits.RC0 = 1;
+TRISD6 = 1;;
 
 
 
 int curr_i = 0;
 
-# 80
+PORTCbits.RC0 = 1;
+
+
+
+
 int dir = 1;
 
+unsigned char button_enabled = 1;
 
 
 while(1)
@@ -5806,8 +5809,24 @@ curr_i = 9 - 1;
 
 set_led_i(curr_i, 1);
 
+# 114
+for(unsigned i = 0; i<30; i++)
+{
+if(PORTDbits.RD6)
+{
+if(button_enabled)
+{
 
-_delay((unsigned long)((500)*(2000000/4000.0)));
+dir = -dir;
+button_enabled = 0;
+}
+}
+else
+{
+button_enabled = 1;
+}
+_delay((unsigned long)((300/30)*(2000000/4000.0)));
+}
 
 
 }

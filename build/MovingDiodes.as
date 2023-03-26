@@ -456,6 +456,8 @@ TOSU equ 0FFFh ;#
 	debug_source C
 	FNCALL	_main,_set_led_i
 	FNROOT	_main
+	global	_TRISD6
+_TRISD6	set	0x7CAE
 	global	_TRISD5
 _TRISD5	set	0x7CAD
 	global	_TRISD4
@@ -558,12 +560,18 @@ set_led_i@val:	; 1 bytes @ 0x2
 ??_set_led_i:	; 1 bytes @ 0x3
 	ds   2
 ??_main:	; 1 bytes @ 0x5
-	ds   2
+	ds   1
+	global	main@button_enabled
+main@button_enabled:	; 1 bytes @ 0x6
+	ds   1
 	global	main@dir
 main@dir:	; 2 bytes @ 0x7
 	ds   2
+	global	main@i
+main@i:	; 2 bytes @ 0x9
+	ds   2
 	global	main@curr_i
-main@curr_i:	; 2 bytes @ 0x9
+main@curr_i:	; 2 bytes @ 0xB
 	ds   2
 ;!
 ;!Data Sizes:
@@ -576,7 +584,7 @@ main@curr_i:	; 2 bytes @ 0x9
 ;!
 ;!Auto Spaces:
 ;!    Space          Size  Autos    Used
-;!    COMRAM           95     11      11
+;!    COMRAM           95     13      13
 ;!    BANK0           160      0       0
 ;!    BANK1           256      0       0
 ;!    BANK2           256      0       0
@@ -630,7 +638,7 @@ main@curr_i:	; 2 bytes @ 0x9
 ;!    None.
 
 ;;
-;;Main: autosize = 0, tempsize = 2, incstack = 0, save=0
+;;Main: autosize = 0, tempsize = 1, incstack = 0, save=0
 ;;
 
 ;!
@@ -639,8 +647,8 @@ main@curr_i:	; 2 bytes @ 0x9
 ;! ---------------------------------------------------------------------------------
 ;! (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
 ;! ---------------------------------------------------------------------------------
-;! (0) _main                                                 6     6      0     639
-;!                                              5 COMRAM     6     6      0
+;! (0) _main                                                 8     8      0     733
+;!                                              5 COMRAM     8     8      0
 ;!                          _set_led_i
 ;! ---------------------------------------------------------------------------------
 ;! (1) _set_led_i                                            5     2      3     524
@@ -662,7 +670,7 @@ main@curr_i:	; 2 bytes @ 0x9
 ;!EEDATA             100      0       0       0        0.0%
 ;!NULL                 0      0       0       0        0.0%
 ;!CODE                 0      0       0       0        0.0%
-;!COMRAM              5F      B       B       1       11.6%
+;!COMRAM              5F      D       D       1       13.7%
 ;!STACK                0      0       0       2        0.0%
 ;!DATA                 0      0       0       3        0.0%
 ;!BITBANK0            A0      0       0       4        0.0%
@@ -694,12 +702,14 @@ main@curr_i:	; 2 bytes @ 0x9
 
 ;; *************** function _main *****************
 ;; Defined at:
-;;		line 55 in file "MovingDiodes.c"
+;;		line 57 in file "MovingDiodes.c"
 ;; Parameters:    Size  Location     Type
 ;;		None
 ;; Auto vars:     Size  Location     Type
-;;  curr_i          2    9[COMRAM] int 
+;;  i               2    9[COMRAM] unsigned int 
+;;  curr_i          2   11[COMRAM] int 
 ;;  dir             2    7[COMRAM] int 
+;;  button_enabl    1    6[COMRAM] unsigned char 
 ;; Return value:  Size  Location     Type
 ;;                  1    wreg      void 
 ;; Registers used:
@@ -710,10 +720,10 @@ main@curr_i:	; 2 bytes @ 0x9
 ;;		Unchanged: 0/0
 ;; Data sizes:     COMRAM   BANK0   BANK1   BANK2   BANK3   BANK4   BANK5   BANK6   BANK7
 ;;      Params:         0       0       0       0       0       0       0       0       0
-;;      Locals:         4       0       0       0       0       0       0       0       0
-;;      Temps:          2       0       0       0       0       0       0       0       0
-;;      Totals:         6       0       0       0       0       0       0       0       0
-;;Total ram usage:        6 bytes
+;;      Locals:         7       0       0       0       0       0       0       0       0
+;;      Temps:          1       0       0       0       0       0       0       0       0
+;;      Totals:         8       0       0       0       0       0       0       0       0
+;;Total ram usage:        8 bytes
 ;; Hardware stack levels required when called: 1
 ;; This function calls:
 ;;		_set_led_i
@@ -723,137 +733,204 @@ main@curr_i:	; 2 bytes @ 0x9
 ;;
 psect	text0,class=CODE,space=0,reloc=2,group=0
 	file	"MovingDiodes.c"
-	line	55
+	line	57
 global __ptext0
 __ptext0:
 psect	text0
 	file	"MovingDiodes.c"
-	line	55
+	line	57
 	
 _main:
 ;incstack = 0
 	callstack 30
-	line	59
-	
-l841:
-	bcf	c:(31904/8),(31904)&7	;volatile
-	line	60
-	bcf	c:(31905/8),(31905)&7	;volatile
 	line	61
-	bcf	c:(31906/8),(31906)&7	;volatile
-	line	62
-	bcf	c:(31912/8),(31912)&7	;volatile
-	line	63
-	bcf	c:(31913/8),(31913)&7	;volatile
-	line	64
-	bcf	c:(31914/8),(31914)&7	;volatile
-	line	65
-	bcf	c:(31915/8),(31915)&7	;volatile
-	line	66
-	bcf	c:(31916/8),(31916)&7	;volatile
-	line	67
-	bcf	c:(31917/8),(31917)&7	;volatile
-	line	70
-	bsf	((c:3970))^0f00h,c,0	;volatile
-	line	74
 	
-l843:
+l868:
+	bcf	c:(31904/8),(31904)&7	;volatile
+	line	62
+	bcf	c:(31905/8),(31905)&7	;volatile
+	line	63
+	bcf	c:(31906/8),(31906)&7	;volatile
+	line	64
+	bcf	c:(31912/8),(31912)&7	;volatile
+	line	65
+	bcf	c:(31913/8),(31913)&7	;volatile
+	line	66
+	bcf	c:(31914/8),(31914)&7	;volatile
+	line	67
+	bcf	c:(31915/8),(31915)&7	;volatile
+	line	68
+	bcf	c:(31916/8),(31916)&7	;volatile
+	line	69
+	bcf	c:(31917/8),(31917)&7	;volatile
+	line	71
+	bsf	c:(31918/8),(31918)&7	;volatile
+	line	75
+	
+l870:
 	movlw	high(0)
 	movwf	((c:main@curr_i+1))^00h,c
 	movlw	low(0)
 	movwf	((c:main@curr_i))^00h,c
-	line	80
+	line	77
+	
+l872:
+	bsf	((c:3970))^0f00h,c,0	;volatile
+	line	82
 	movlw	high(01h)
 	movwf	((c:main@dir+1))^00h,c
 	movlw	low(01h)
 	movwf	((c:main@dir))^00h,c
-	line	87
+	line	84
+	movlw	low(01h)
+	movwf	((c:main@button_enabled))^00h,c
+	line	90
 	
-l845:
+l874:
 	movff	(c:main@curr_i),(c:set_led_i@i)
 	movff	(c:main@curr_i+1),(c:set_led_i@i+1)
 	movlw	low(0)
 	movwf	((c:set_led_i@val))^00h,c
 	call	_set_led_i	;wreg free
-	line	91
+	line	94
 	
-l847:
+l876:
 	movf	((c:main@dir))^00h,c,w
 	addwf	((c:main@curr_i))^00h,c
 	movf	((c:main@dir+1))^00h,c,w
 	addwfc	((c:main@curr_i+1))^00h,c
 
-	line	92
+	line	95
 	
-l849:
+l878:
 		movlw	9
 	xorwf	((c:main@curr_i))^00h,c,w
 iorwf	((c:main@curr_i+1))^00h,c,w
 	btfss	status,2
-	goto	u211
-	goto	u210
+	goto	u241
+	goto	u240
 
-u211:
-	goto	l853
-u210:
-	line	94
+u241:
+	goto	l882
+u240:
+	line	97
 	
-l851:
+l880:
 	movlw	high(0)
 	movwf	((c:main@curr_i+1))^00h,c
 	movlw	low(0)
 	movwf	((c:main@curr_i))^00h,c
-	line	95
-	goto	l857
-	line	96
-	
-l853:
-	btfsc	((c:main@curr_i+1))^00h,c,7
-	goto	u220
-	goto	u221
-
-u221:
-	goto	l857
-u220:
 	line	98
+	goto	l886
+	line	99
 	
-l855:
+l882:
+	btfsc	((c:main@curr_i+1))^00h,c,7
+	goto	u250
+	goto	u251
+
+u251:
+	goto	l886
+u250:
+	line	101
+	
+l884:
 	movlw	high(08h)
 	movwf	((c:main@curr_i+1))^00h,c
 	movlw	low(08h)
 	movwf	((c:main@curr_i))^00h,c
-	line	102
+	line	105
 	
-l857:
+l886:
 	movff	(c:main@curr_i),(c:set_led_i@i)
 	movff	(c:main@curr_i+1),(c:set_led_i@i+1)
 	movlw	low(01h)
 	movwf	((c:set_led_i@val))^00h,c
 	call	_set_led_i	;wreg free
-	line	105
+	line	114
 	
-l859:
+l888:
+	movlw	high(0)
+	movwf	((c:main@i+1))^00h,c
+	movlw	low(0)
+	movwf	((c:main@i))^00h,c
+	line	115
+	
+l49:
+	line	116
+	btfss	((c:3971))^0f00h,c,6	;volatile
+	goto	u261
+	goto	u260
+u261:
+	goto	l900
+u260:
+	line	118
+	
+l894:
+	movf	((c:main@button_enabled))^00h,c,w
+	btfsc	status,2
+	goto	u271
+	goto	u270
+u271:
+	goto	l902
+u270:
+	line	121
+	
+l896:
+	negf	((c:main@dir))^00h,c
+	comf	((c:main@dir+1))^00h,c
+	btfsc	status,0
+	incf	((c:main@dir+1))^00h,c
+	line	122
+	
+l898:
+	movlw	low(0)
+	movwf	((c:main@button_enabled))^00h,c
+	goto	l902
+	line	127
+	
+l900:
+	movlw	low(01h)
+	movwf	((c:main@button_enabled))^00h,c
+	line	129
+	
+l902:
 	asmopt push
 asmopt off
-movlw  2
-movwf	(??_main+0+0+1)^00h,c
-movlw	69
+movlw	7
 movwf	(??_main+0+0)^00h,c
-	movlw	170
-u237:
+	movlw	125
+u297:
 decfsz	wreg,f
-	bra	u237
+	bra	u297
 	decfsz	(??_main+0+0)^00h,c,f
-	bra	u237
-	decfsz	(??_main+0+0+1)^00h,c,f
-	bra	u237
+	bra	u297
+	nop
 asmopt pop
 
-	goto	l845
+	line	114
+	
+l904:
+	infsnz	((c:main@i))^00h,c
+	incf	((c:main@i+1))^00h,c
+	
+l906:
+		movf	((c:main@i+1))^00h,c,w
+	bnz	u280
+	movlw	30
+	subwf	 ((c:main@i))^00h,c,w
+	btfss	status,0
+	goto	u281
+	goto	u280
+
+u281:
+	goto	l49
+u280:
+	goto	l874
 	global	start
 	goto	start
 	callstack 0
-	line	110
+	line	135
 GLOBAL	__end_of_main
 	__end_of_main:
 	signat	_main,89
@@ -861,7 +938,7 @@ GLOBAL	__end_of_main
 
 ;; *************** function _set_led_i *****************
 ;; Defined at:
-;;		line 18 in file "MovingDiodes.c"
+;;		line 21 in file "MovingDiodes.c"
 ;; Parameters:    Size  Location     Type
 ;;  i               2    0[COMRAM] int 
 ;;  val             1    2[COMRAM] unsigned char 
@@ -889,149 +966,149 @@ GLOBAL	__end_of_main
 ;; This function uses a non-reentrant model
 ;;
 psect	text1,class=CODE,space=0,reloc=2,group=0
-	line	18
+	line	21
 global __ptext1
 __ptext1:
 psect	text1
 	file	"MovingDiodes.c"
-	line	18
+	line	21
 	
 _set_led_i:
 ;incstack = 0
 	callstack 30
-	line	22
-	
-l831:
-	goto	l835
-	line	24
-	
-l28:
 	line	25
-	btfsc	(c:set_led_i@val)^00h,c,0
-	bra	u125
-	bcf	((c:3970))^0f00h,c,0	;volatile
-	bra	u126
-	u125:
-	bsf	((c:3970))^0f00h,c,0	;volatile
-	u126:
-
-	line	26
-	goto	l38
+	
+l858:
+	goto	l862
 	line	27
 	
 l30:
 	line	28
 	btfsc	(c:set_led_i@val)^00h,c,0
-	bra	u135
-	bcf	((c:3970))^0f00h,c,1	;volatile
-	bra	u136
-	u135:
-	bsf	((c:3970))^0f00h,c,1	;volatile
-	u136:
-
-	line	29
-	goto	l38
-	line	30
-	
-l31:
-	line	31
-	btfsc	(c:set_led_i@val)^00h,c,0
-	bra	u145
-	bcf	((c:3970))^0f00h,c,2	;volatile
-	bra	u146
-	u145:
-	bsf	((c:3970))^0f00h,c,2	;volatile
-	u146:
-
-	line	32
-	goto	l38
-	line	33
-	
-l32:
-	line	34
-	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u155
-	bcf	((c:3971))^0f00h,c,0	;volatile
+	bcf	((c:3970))^0f00h,c,0	;volatile
 	bra	u156
 	u155:
-	bsf	((c:3971))^0f00h,c,0	;volatile
+	bsf	((c:3970))^0f00h,c,0	;volatile
 	u156:
 
-	line	35
-	goto	l38
-	line	36
+	line	29
+	goto	l40
+	line	30
 	
-l33:
-	line	37
+l32:
+	line	31
 	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u165
-	bcf	((c:3971))^0f00h,c,1	;volatile
+	bcf	((c:3970))^0f00h,c,1	;volatile
 	bra	u166
 	u165:
-	bsf	((c:3971))^0f00h,c,1	;volatile
+	bsf	((c:3970))^0f00h,c,1	;volatile
 	u166:
 
-	line	38
-	goto	l38
-	line	39
+	line	32
+	goto	l40
+	line	33
 	
-l34:
-	line	40
+l33:
+	line	34
 	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u175
-	bcf	((c:3971))^0f00h,c,2	;volatile
+	bcf	((c:3970))^0f00h,c,2	;volatile
 	bra	u176
 	u175:
-	bsf	((c:3971))^0f00h,c,2	;volatile
+	bsf	((c:3970))^0f00h,c,2	;volatile
 	u176:
 
-	line	41
-	goto	l38
-	line	42
+	line	35
+	goto	l40
+	line	36
 	
-l35:
-	line	43
+l34:
+	line	37
 	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u185
-	bcf	((c:3971))^0f00h,c,3	;volatile
+	bcf	((c:3971))^0f00h,c,0	;volatile
 	bra	u186
 	u185:
-	bsf	((c:3971))^0f00h,c,3	;volatile
+	bsf	((c:3971))^0f00h,c,0	;volatile
 	u186:
 
-	line	44
-	goto	l38
-	line	45
+	line	38
+	goto	l40
+	line	39
 	
-l36:
-	line	46
+l35:
+	line	40
 	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u195
-	bcf	((c:3971))^0f00h,c,4	;volatile
+	bcf	((c:3971))^0f00h,c,1	;volatile
 	bra	u196
 	u195:
-	bsf	((c:3971))^0f00h,c,4	;volatile
+	bsf	((c:3971))^0f00h,c,1	;volatile
 	u196:
 
-	line	47
-	goto	l38
-	line	48
+	line	41
+	goto	l40
+	line	42
 	
-l37:
-	line	49
+l36:
+	line	43
 	btfsc	(c:set_led_i@val)^00h,c,0
 	bra	u205
-	bcf	((c:3971))^0f00h,c,5	;volatile
+	bcf	((c:3971))^0f00h,c,2	;volatile
 	bra	u206
 	u205:
-	bsf	((c:3971))^0f00h,c,5	;volatile
+	bsf	((c:3971))^0f00h,c,2	;volatile
 	u206:
 
-	line	50
-	goto	l38
-	line	22
+	line	44
+	goto	l40
+	line	45
 	
-l835:
+l37:
+	line	46
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u215
+	bcf	((c:3971))^0f00h,c,3	;volatile
+	bra	u216
+	u215:
+	bsf	((c:3971))^0f00h,c,3	;volatile
+	u216:
+
+	line	47
+	goto	l40
+	line	48
+	
+l38:
+	line	49
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u225
+	bcf	((c:3971))^0f00h,c,4	;volatile
+	bra	u226
+	u225:
+	bsf	((c:3971))^0f00h,c,4	;volatile
+	u226:
+
+	line	50
+	goto	l40
+	line	51
+	
+l39:
+	line	52
+	btfsc	(c:set_led_i@val)^00h,c,0
+	bra	u235
+	bcf	((c:3971))^0f00h,c,5	;volatile
+	bra	u236
+	u235:
+	bsf	((c:3971))^0f00h,c,5	;volatile
+	u236:
+
+	line	53
+	goto	l40
+	line	25
+	
+l862:
 	movff	(c:set_led_i@i),??_set_led_i+0+0
 	movff	(c:set_led_i@i+1),??_set_led_i+0+0+1
 	; Switch on 2 bytes has been partitioned into a top level switch of size 1, and 1 sub-switches
@@ -1045,10 +1122,10 @@ l835:
 	movf ??_set_led_i+0+1^00h,c,w
 	xorlw	0^0	; case 0
 	skipnz
-	goto	l865
-	goto	l38
+	goto	l912
+	goto	l40
 	
-l865:
+l912:
 ; Switch size 1, requested type "simple"
 ; Number of cases is 9, Range of values is 0 to 8
 ; switch strategies available:
@@ -1059,36 +1136,36 @@ l865:
 	movf ??_set_led_i+0+0^00h,c,w
 	xorlw	0^0	; case 0
 	skipnz
-	goto	l28
+	goto	l30
 	xorlw	1^0	; case 1
 	skipnz
-	goto	l30
+	goto	l32
 	xorlw	2^1	; case 2
 	skipnz
-	goto	l31
+	goto	l33
 	xorlw	3^2	; case 3
 	skipnz
-	goto	l32
+	goto	l34
 	xorlw	4^3	; case 4
 	skipnz
-	goto	l33
+	goto	l35
 	xorlw	5^4	; case 5
 	skipnz
-	goto	l34
+	goto	l36
 	xorlw	6^5	; case 6
 	skipnz
-	goto	l35
+	goto	l37
 	xorlw	7^6	; case 7
 	skipnz
-	goto	l36
+	goto	l38
 	xorlw	8^7	; case 8
 	skipnz
-	goto	l37
-	goto	l38
+	goto	l39
+	goto	l40
 
-	line	52
+	line	55
 	
-l38:
+l40:
 	return	;funcret
 	callstack 0
 GLOBAL	__end_of_set_led_i

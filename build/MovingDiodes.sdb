@@ -25,9 +25,9 @@
 [v ___lmul __lmul `(ul  1 e 4 0 ]
 "91 /opt/microchip/xc8/v2.36/pic/sources/c90/common/Umul64.c
 [v ___omul __omul `(ul  1 e 4 0 ]
-"18 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
+"21 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
 [v _set_led_i set_led_i `(v  1 e 1 0 ]
-"55
+"57
 [v _main main `(v  1 e 1 0 ]
 [s S24 . 1 `uc 1 RC0 1 0 :1:0 
 `uc 1 RC1 1 0 :1:1 
@@ -104,19 +104,25 @@
 [v _TRISD4 TRISD4 `VEb  1 e 0 @31916 ]
 "10961
 [v _TRISD5 TRISD5 `VEb  1 e 0 @31917 ]
-"55 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
+"10964
+[v _TRISD6 TRISD6 `VEb  1 e 0 @31918 ]
+"57 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
 [v _main main `(v  1 e 1 0 ]
 {
-"74
-[v main@curr_i curr_i `i  1 a 2 9 ]
-"80
+"114
+[v main@i i `ui  1 a 2 9 ]
+"75
+[v main@curr_i curr_i `i  1 a 2 11 ]
+"82
 [v main@dir dir `i  1 a 2 7 ]
-"110
+"84
+[v main@button_enabled button_enabled `uc  1 a 1 6 ]
+"135
 } 0
-"18
+"21
 [v _set_led_i set_led_i `(v  1 e 1 0 ]
 {
 [v set_led_i@i i `i  1 p 2 0 ]
 [v set_led_i@val val `uc  1 p 1 2 ]
-"52
+"55
 } 0

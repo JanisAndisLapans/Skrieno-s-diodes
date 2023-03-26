@@ -15,6 +15,9 @@
 #define LED8 PORTDbits.RD4
 #define LED9 PORTDbits.RD5
 
+#define REVERSE_BUTTON PORTDbits.RD6
+
+
 void set_led_i(int i, unsigned char val)
 {
     //Nomaina diodei ar indeksu i vērtību par val
@@ -51,7 +54,6 @@ void set_led_i(int i, unsigned char val)
     }
 }
 
-
 void main(void) 
 {
     //setup
@@ -65,20 +67,21 @@ void main(void)
     TRISD3 = OUT;
     TRISD4 = OUT;
     TRISD5 = OUT;
-
-
-    LED1 = 1; // Sākumā pirmais ir ieslēgts
+    //Uzstāda pogu kā ievadi
+    TRISD6 = IN;
     
     #define LED_ROW_LEN 9
     
     int curr_i = 0; // Indekss diodei, kura iepriekšēja ir ieslēgta no 0 lidz diozu skaits-1
     
+    LED1 = 1; // Sākumā pirmais ir ieslēgts
     
     //Virziens skrienošo diožu kustībai
     #define RIGHT 1
     #define LEFT -1
     int dir = RIGHT;
     
+    unsigned char button_enabled = 1; //Vai poga ir aktīva
     
     //loop    
     while(1)
@@ -102,7 +105,29 @@ void main(void)
         set_led_i(curr_i, 1);
         
         
-       __delay_ms(500);
+        #define TIME_BETWEEN_MOVES 300 // Laiks starp diožu pārslēgšanu ms
+        #define SLEEP_ITERS 30 // Cik bieži pārbauda vai poga ir nospiesta
+                               // TIME_BETWEEN_MOVES jādalās ar to, lai laiks būtu precīzāks
+                               //Ja SLEEP_ITERS ir lielāks poga ir jūtīgāka (ja nospiež pogu uz īsu brīdi
+                               //citādāk var nereģistrēt, bet pārāk liels skaitlis var palēnināt darbību)
+        
+        for(unsigned i = 0; i<SLEEP_ITERS; i++)
+        {
+            if(REVERSE_BUTTON)
+            {
+                if(button_enabled)
+                {
+                    //Ja poga ir aktīva un nospiestra maina virzienu un pogu deaktivizē, lai nemainītu virzienu turot
+                    dir = -dir;
+                    button_enabled = 0;
+                }
+            }
+            else // Atlaižot pogu tā aktivizējas atkal
+            {
+                button_enabled = 1;
+            }
+            __delay_ms(TIME_BETWEEN_MOVES/SLEEP_ITERS);
+        }
         
         
     }
