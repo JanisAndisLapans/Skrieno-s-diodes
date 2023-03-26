@@ -1,0 +1,52 @@
+[p GLOBOPT AUTOSTATIC LFSROK ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 18F4550 ]
+[d frameptr 4065 ]
+"62 /opt/microchip/xc8/v2.36/pic/sources/c90/common/float.c
+[v ___ftpack __ftpack `(f  1 e 3 0 ]
+"86 /opt/microchip/xc8/v2.36/pic/sources/c90/common/ftadd.c
+[v ___ftadd __ftadd `(f  1 e 3 0 ]
+"54 /opt/microchip/xc8/v2.36/pic/sources/c90/common/ftdiv.c
+[v ___ftdiv __ftdiv `(f  1 e 3 0 ]
+"62 /opt/microchip/xc8/v2.36/pic/sources/c90/common/ftmul.c
+[v ___ftmul __ftmul `(f  1 e 3 0 ]
+"19 /opt/microchip/xc8/v2.36/pic/sources/c90/common/ftsub.c
+[v ___ftsub __ftsub `(f  1 e 3 0 ]
+"10 /opt/microchip/xc8/v2.36/pic/sources/c90/common/sprcadd.c
+[v ___fladd __fladd `(d  1 e 3 0 ]
+"245
+[v ___flsub __flsub `(d  1 e 3 0 ]
+"11 /opt/microchip/xc8/v2.36/pic/sources/c90/common/sprcdiv.c
+[v ___fldiv __fldiv `(d  1 e 3 0 ]
+"8 /opt/microchip/xc8/v2.36/pic/sources/c90/common/sprcmul.c
+[v ___flmul __flmul `(d  1 e 3 0 ]
+"15 /opt/microchip/xc8/v2.36/pic/sources/c90/common/Umul32.c
+[v ___lmul __lmul `(ul  1 e 4 0 ]
+"91 /opt/microchip/xc8/v2.36/pic/sources/c90/common/Umul64.c
+[v ___omul __omul `(ul  1 e 4 0 ]
+"19 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
+[v _main main `(v  1 e 1 0 ]
+"10931 /opt/microchip/xc8/v2.36/pic/include/proc/pic18f4550.h
+[v _TRISC0 TRISC0 `VEb  1 e 0 @31904 ]
+"10934
+[v _TRISC1 TRISC1 `VEb  1 e 0 @31905 ]
+"10937
+[v _TRISC2 TRISC2 `VEb  1 e 0 @31906 ]
+"10946
+[v _TRISD0 TRISD0 `VEb  1 e 0 @31912 ]
+"10949
+[v _TRISD1 TRISD1 `VEb  1 e 0 @31913 ]
+"10952
+[v _TRISD2 TRISD2 `VEb  1 e 0 @31914 ]
+"10955
+[v _TRISD3 TRISD3 `VEb  1 e 0 @31915 ]
+"10958
+[v _TRISD4 TRISD4 `VEb  1 e 0 @31916 ]
+"10961
+[v _TRISD5 TRISD5 `VEb  1 e 0 @31917 ]
+"19 /home/janis/Documents/Skrienosas diodes/MovingDiodes.c
+[v _main main `(v  1 e 1 0 ]
+{
+"42
+} 0
